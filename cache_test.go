@@ -64,12 +64,13 @@ func TestAddRewrite(t *testing.T) {
 
 	cache.Add(2, "b")
 	node := cache.items[2]
-	expected := *node
-	cache.Add(2, "a")
-	expected.value = "a"
 
+	cache.Add(3, "c")
+
+	cache.Add(2, "a")
+
+	assert.Equal(t, cache.head, node)
 	assert.Equal(t, node, cache.items[2])
-	assert.Equal(t, expected, *cache.items[2])
 	assert.Equal(t, 2, node.key)
 }
 

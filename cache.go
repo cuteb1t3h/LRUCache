@@ -101,7 +101,24 @@ func (cache *LRUCache) add(key, value any, ttl time.Duration) {
 		}
 		cache.items[key] = node
 	} else {
+		if ttl != 0 {
+			val.exp = time.Now().Add(ttl)
+		}
 		val.value = value
+
+		if cache.head != val {
+			if val.prev != nil {
+				val.prev.next = val.next
+			}
+			if val.next != nil {
+				val.next.prev = val.prev
+			}
+
+			val.next = cache.head
+			val.prev = nil
+			cache.head.prev = val
+			cache.head = val
+		}
 	}
 	cache.mutex.Unlock()
 }
