@@ -106,27 +106,32 @@ func (cache *LRUCache) add(key, value any, ttl time.Duration) {
 		}
 		val.value = value
 
-		if cache.head != val {
-			if val.prev != nil {
-				val.prev.next = val.next
-			}
-			if val.next != nil {
-				val.next.prev = val.prev
-			}
-
-			val.next = cache.head
-			val.prev = nil
-			cache.head.prev = val
-			cache.head = val
-		}
+		cache.moveToHead(val)
 	}
 	cache.mutex.Unlock()
+}
+
+func (cache *LRUCache) moveToHead(val *Node) {
+	if cache.head != val {
+		if val.prev != nil {
+			val.prev.next = val.next
+		}
+		if val.next != nil {
+			val.next.prev = val.prev
+		}
+
+		val.next = cache.head
+		val.prev = nil
+		cache.head.prev = val
+		cache.head = val
+	}
 }
 
 // Get - Получение элемента по ключу
 func (cache *LRUCache) Get(key any) (value any, ok bool) {
 	cache.mutex.RLock()
 	if val, ok := cache.items[key]; ok {
+		cache.moveToHead(val)
 		cache.mutex.RUnlock()
 		return val.value, ok
 	} else {

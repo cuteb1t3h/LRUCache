@@ -28,6 +28,7 @@ func TestGet(t *testing.T) {
 
 	val, ok := cache.Get(1)
 
+	assert.Equal(t, cache.head, cache.items[1])
 	assert.Equal(t, "a", val)
 	assert.True(t, ok)
 }
