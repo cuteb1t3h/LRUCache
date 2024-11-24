@@ -26,7 +26,7 @@ type ICache interface {
 	Len() int
 	Clear()
 	Add(key, value any)
-	AddWithTTL(key, value any, ttl time.Time)
+	AddWithTTL(key, value any, ttl time.Duration)
 	Get(key any) (value any, ok bool)
 	Remove(key any)
 }
